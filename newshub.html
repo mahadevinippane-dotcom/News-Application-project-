@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NewsHub – Smart News Application</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#14213d;--muted:#5b6478;--line:#dfe4ef;--brand:#2748d8;--brand-ink:#fff;--sun:#ffb703;
+ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1524;--card:#182036;--ink:#eef1f8;--muted:#a2abc0;--line:#2a3450;--brand:#7c98ff;--brand-ink:#0f1524}}
+:root[data-theme="dark"]{--bg:#0f1524;--card:#182036;--ink:#eef1f8;--muted:#a2abc0;--line:#2a3450;--brand:#7c98ff;--brand-ink:#0f1524}
+html{scroll-padding-top:calc(72px + env(safe-area-inset-top,0px));scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.55}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--card);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-weight:800;font-size:1.5rem;text-decoration:none;letter-spacing:-.03em}
+.logo b{color:var(--brand)}
+nav ul{display:flex;gap:6px;list-style:none;margin:0;padding:0}
+nav a{display:block;padding:8px 14px;border-radius:8px;text-decoration:none;font-weight:500;color:var(--muted)}
+nav a:hover,nav a.on{background:var(--bg);color:var(--ink)}
+#menuBtn{display:none;background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;width:44px;height:44px;font-size:1.3rem;cursor:pointer}
+.hero{padding:48px 0 28px}
+.hero h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.1;letter-spacing:-.035em;margin:0 0 12px;max-width:16em}
+.hero p{color:var(--muted);max-width:38em;margin:0 0 24px;font-size:1.05rem}
+.search{display:flex;gap:8px;max-width:680px}
+.search input{flex:1;min-width:0;padding:14px 16px;font:inherit;border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}
+.search input:focus{border-color:var(--brand);outline:none}
+.btn{font:inherit;font-weight:700;border:0;border-radius:12px;padding:14px 22px;background:var(--brand);color:var(--brand-ink);cursor:pointer;text-decoration:none;display:inline-block}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:transparent;color:var(--brand);border:2px solid var(--brand);padding:10px 16px;border-radius:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 0}
+.chip{font:inherit;font-weight:500;padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.chip:hover{border-color:var(--brand)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.status{margin:24px 0 8px;padding:12px 16px;border-radius:10px;border-left:5px solid var(--sun);background:var(--card);font-size:.92rem}
+.status.live{border-color:#1a9c5b}
+.head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin:28px 0 14px}
+.head h2{margin:0;font-size:1.5rem;letter-spacing:-.02em}
+.count{color:var(--muted);font-size:.95rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(20,33,61,.16)}
+.pic{height:170px;display:flex;align-items:center;justify-content:center;font-size:3.2rem;background:linear-gradient(135deg,var(--c1),var(--c2));overflow:hidden}
+.pic img{width:100%;height:100%;object-fit:cover}
+.body{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
+.tag{align-self:flex-start;font-size:.78rem;font-weight:700;color:var(--brand);margin-bottom:6px}
+.card h3{margin:0 0 8px;font-size:1.1rem;line-height:1.3}
+.meta{font-size:.84rem;color:var(--muted);margin-bottom:10px}
+.meta strong{color:var(--ink)}
+.desc{margin:0 0 16px;color:var(--muted);font-size:.95rem;flex:1;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.center{text-align:center;padding:56px 16px;color:var(--muted)}
+.spin{width:42px;height:42px;border:4px solid var(--line);border-top-color:var(--brand);border-radius:50%;margin:0 auto 14px;animation:s 1s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:3s}.card{transition:none}html{scroll-behavior:auto}}
+footer{margin-top:64px;background:var(--card);border-top:1px solid var(--line);padding:26px 0;text-align:center;color:var(--muted);font-size:.92rem}
+footer p{margin:2px 0}
+@media (max-width:760px){
+ #menuBtn{display:block}
+ nav{display:none;position:absolute;left:0;right:0;top:64px;background:var(--card);border-bottom:1px solid var(--line);padding:8px 20px 14px}
+ nav.open{display:block}
+ nav ul{flex-direction:column}
+ .search{flex-direction:column}
+ .grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header>
+ <div class="wrap bar">
+  <a class="logo" href="#home">News<b>Hub</b></a>
+  <button id="menuBtn" aria-label="Open menu" aria-expanded="false">☰</button>
+  <nav id="nav" aria-label="Main">
+   <ul>
+    <li><a href="#home" class="on">Home</a></li>
+    <li><a href="#news">Latest News</a></li>
+    <li><a href="#cats">Categories</a></li>
+    <li><a href="#home" id="navSearch">Search</a></li>
+   </ul>
+  </nav>
+ </div>
+</header>
+
+<main class="wrap">
+ <section class="hero" id="home">
+  <h1>Search the news by any keyword</h1>
+  <p>Type a topic like technology, sports, education or India, or pick a category. Each card links to the original article.</p>
+  <form class="search" id="form" role="search">
+   <input id="q" type="search" placeholder="Search news, e.g. technology, sports, India" aria-label="Search news">
+   <button class="btn" type="submit">Search</button>
+  </form>
+  <div class="chips" id="cats" role="group" aria-label="Categories"></div>
+ </section>
+
+ <div id="status" class="status"></div>
+
+ <section id="news">
+  <div class="head"><h2 id="title">Latest headlines</h2><span class="count" id="count"></span></div>
+  <div id="out"></div>
+ </section>
+</main>
+
+<footer>
+ <p>© 2026 NewsHub – Smart News Application</p>
+ <p>College Project – Feature Set B</p>
+</footer>
+
+<script>
+/* ============ 1. SETTINGS (edit these to connect a real news API) ============
+   Free key: https://gnews.io  → paste it below. Leave empty to use demo data.
+   Note: many APIs block browser calls from hosted pages; if the live call fails,
+   NewsHub shows an error and lets the user switch to demo data. */
+const CONFIG = {
+  API_URL: "https://gnews.io/api/v4",
+  API_KEY: "",          // <- put your API key here
+  LANG: "en",
+  MAX: 12
+};
+
+/* ============ 2. DEMO DATA (sample articles, NOT live news) ============
+   Headlines and descriptions are sample text written for this project.
+   Each "url" opens the real website's section page for that topic. */
+const DEMO = [
+ {c:"Technology",t:"AI study tools are becoming common in college classrooms",s:"The Verge",d:"2026-09-28T09:30:00",u:"https://www.theverge.com/tech",x:"Students and teachers are experimenting with AI assistants for notes, quizzes and coding practice, while colleges discuss clear rules for their use."},
+ {c:"Technology",t:"Smartphone makers focus on longer battery life and repair options",s:"TechCrunch",d:"2026-09-27T14:10:00",u:"https://techcrunch.com/",x:"New phone launches highlight battery health features and easier repairs as buyers keep their devices for more years."},
+ {c:"Sports",t:"Cricket teams finalise squads ahead of the new international season",s:"ESPNcricinfo",d:"2026-09-28T18:45:00",u:"https://www.espncricinfo.com/",x:"Selectors have named their squads, with a mix of experienced players and young talent expected to feature in upcoming matches."},
+ {c:"Sports",t:"Youth football academies expand training programmes across cities",s:"BBC Sport",d:"2026-09-26T11:00:00",u:"https://www.bbc.com/sport",x:"More academies are opening free trial days, giving school and college players a clearer path to professional clubs."},
+ {c:"Education",t:"Universities add skill-based certificates alongside degree courses",s:"Indian Express",d:"2026-09-28T07:20:00",u:"https://indianexpress.com/section/education/",x:"Short certificate courses in data, design and communication are being offered so students can build job skills during their degree."},
+ {c:"Education",t:"Online exam platforms improve security and accessibility",s:"The Hindu",d:"2026-09-25T16:35:00",u:"https://www.thehindu.com/education/",x:"Institutions are upgrading online exam tools to reduce technical issues and support students with different needs."},
+ {c:"Business",t:"Small businesses turn to digital payments for faster sales",s:"Reuters",d:"2026-09-28T12:05:00",u:"https://www.reuters.com/business/",x:"Shops and street vendors report quicker checkouts and simpler bookkeeping after adopting QR and mobile payments."},
+ {c:"Business",t:"Start-ups report steady hiring for entry-level graduates",s:"Economic Times",d:"2026-09-27T08:40:00",u:"https://economictimes.indiatimes.com/",x:"Young companies say they are hiring fresh graduates for support, marketing and development roles this quarter."},
+ {c:"Entertainment",t:"New regional films draw record audiences on streaming platforms",s:"Hollywood Reporter",d:"2026-09-27T19:15:00",u:"https://www.hollywoodreporter.com/",x:"Stories in regional languages are finding viewers across the country and abroad through subtitles and dubbing."},
+ {c:"Entertainment",t:"Music festival season returns with student-friendly ticket offers",s:"Bollywood Hungama",d:"2026-09-24T10:00:00",u:"https://www.bollywoodhungama.com/",x:"Organisers announce line-ups and discounted passes for students as the festival calendar opens for the year."},
+ {c:"Science",t:"Researchers test low-cost sensors to track air quality in cities",s:"Nature",d:"2026-09-28T06:50:00",u:"https://www.nature.com/news",x:"Small sensors placed on streets and rooftops help scientists build detailed pollution maps at a lower cost."},
+ {c:"Science",t:"Space agencies plan new missions to study the Moon's surface",s:"ScienceDaily",d:"2026-09-26T13:25:00",u:"https://www.sciencedaily.com/",x:"Planned missions aim to collect data on lunar rocks and ice, preparing for longer stays in future."},
+ {c:"World",t:"Global leaders meet to discuss climate and trade cooperation",s:"BBC News",d:"2026-09-28T20:00:00",u:"https://www.bbc.com/news/world",x:"Talks focus on shared climate goals, supply chains and support for developing economies."},
+ {c:"World",t:"Cities around the world invest in cleaner public transport",s:"Al Jazeera",d:"2026-09-26T09:15:00",u:"https://www.aljazeera.com/news/",x:"Electric buses and metro extensions are being rolled out to cut traffic and emissions in busy urban areas."},
+ {c:"India",t:"State governments announce new schemes for youth skill training",s:"The Hindu",d:"2026-09-28T10:30:00",u:"https://www.thehindu.com/news/national/",x:"New programmes offer training in digital and technical skills, with partnerships between colleges and local industry."},
+ {c:"India",t:"Railways add new services to improve travel during festival season",s:"Times of India",d:"2026-09-27T17:00:00",u:"https://timesofindia.indiatimes.com/india",x:"Extra trains and online booking improvements are planned to help passengers travel more comfortably."}
+];
+
+const CATEGORIES = ["All","Technology","Sports","Education","Business","Entertainment","Science","World","India"];
+const LOOK = {Technology:["#2748d8","#6d8bff","💻"],Sports:["#0b8f5a","#4cd08f","🏏"],Education:["#7a3fd1","#b48cff","🎓"],Business:["#b26a00","#ffb703","📈"],Entertainment:["#c2185b","#ff7aa8","🎬"],Science:["#00798c","#4fd1e6","🔬"],World:["#14213d","#4a5f9a","🌍"],India:["#e65100","#ffab40","🇮🇳"]};
+
+/* ============ 3. APP STATE ============ */
+const state = {query:"", category:"All", useDemo: !CONFIG.API_KEY};
+const $ = id => document.getElementById(id);
+
+/* ============ 4. HELPERS ============ */
+const esc = s => String(s ?? "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function fmtDate(iso){
+  const d = new Date(iso);
+  if (isNaN(d)) return {date:"Date not available", time:""};
+  return {
+    date: d.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}),
+    time: d.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})
+  };
+}
+
+/* ============ 5. DATA LAYER ============ */
+// Demo: filter sample articles by category and keyword
+function getDemo(){
+  const q = state.query.toLowerCase();
+  return DEMO.filter(a =>
+    (state.category === "All" || a.c === state.category) &&
+    (!q || [a.t,a.x,a.s,a.c].join(" ").toLowerCase().includes(q))
+  ).sort((a,b) => new Date(b.d) - new Date(a.d))
+   .map(a => ({title:a.t,source:a.s,date:a.d,description:a.x,url:a.u,image:"",category:a.c}));
+}
+
+// Live: GNews API (used only when CONFIG.API_KEY is filled in)
+async function getLive(){
+  const cat = state.category.toLowerCase();
+  const direct = ["technology","business","entertainment","science","world","sports"];
+  let url;
+  if (state.query || cat === "education" || cat === "india"){
+    const q = [state.query, ["education","india"].includes(cat) ? cat : ""].filter(Boolean).join(" ");
+    url = `${CONFIG.API_URL}/search?q=${encodeURIComponent(q)}&lang=${CONFIG.LANG}&max=${CONFIG.MAX}&apikey=${CONFIG.API_KEY}`;
+  } else {
+    const topic = direct.includes(cat) ? cat : "general";
+    url = `${CONFIG.API_URL}/top-headlines?category=${topic}&lang=${CONFIG.LANG}&max=${CONFIG.MAX}&apikey=${CONFIG.API_KEY}`;
+  }
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("The news service returned status " + res.status + ".");
+  const data = await res.json();
+  return (data.articles || []).map(a => ({
+    title:a.title, source:(a.source && a.source.name) || "Unknown source", date:a.publishedAt,
+    description:a.description || "No description available.", url:a.url, image:a.image || "", category:state.category
+  }));
+}
+
+/* ============ 6. RENDERING ============ */
+function showStatus(){
+  const el = $("status");
+  if (state.useDemo){
+    el.className = "status";
+    el.innerHTML = "<strong>Demo mode:</strong> these are sample articles, not live news. \"Read Full Article\" opens the source website's section page. To show live news, add an API key in the CONFIG block of the code.";
+  } else {
+    el.className = "status live";
+    el.innerHTML = "<strong>Live mode:</strong> articles are loaded from the news API you configured.";
+  }
+}
+
+function card(a){
+  const [c1,c2,icon] = LOOK[a.category] || LOOK.World;
+  const {date,time} = fmtDate(a.date);
+  const pic = a.image
+    ? `<img src="${esc(a.image)}" alt="" loading="lazy" onerror="this.parentNode.textContent='${icon}'">`
+    : icon;
+  return `<article class="card">
+    <div class="pic" style="--c1:${c1};--c2:${c2}">${pic}</div>
+    <div class="body">
+      <span class="tag">${esc(a.category === "All" ? "News" : a.category)}</span>
+      <h3>${esc(a.title)}</h3>
+      <div class="meta"><strong>${esc(a.source)}</strong> · ${date}${time ? " at " + time : ""}</div>
+      <p class="desc">${esc(a.description)}</p>
+      <a class="btn ghost" href="${esc(a.url)}" target="_blank" rel="noopener noreferrer">Read Full Article</a>
+    </div>
+  </article>`;
+}
+
+async function load(){
+  const out = $("out");
+  showStatus();
+  $("title").textContent = state.query ? `Results for “${state.query}”` : (state.category === "All" ? "Latest headlines" : state.category + " news");
+  $("count").textContent = "";
+  out.innerHTML = '<div class="center" role="status"><div class="spin"></div>Loading news…</div>';
+  try {
+    if (state.useDemo) await new Promise(r => setTimeout(r, 350)); // short pause so the loader is visible
+    const list = state.useDemo ? getDemo() : await getLive();
+    if (!list.length){
+      out.innerHTML = '<div class="center"><h3>No news found</h3><p>Try a different keyword or choose another category.</p></div>';
+      return;
+    }
+    $("count").textContent = list.length + (list.length === 1 ? " article" : " articles");
+    out.innerHTML = '<div class="grid">' + list.map(card).join("") + "</div>";
+  } catch (err){
+    out.innerHTML = `<div class="center"><h3>News could not be loaded</h3><p>${esc(err.message || "Please check your internet connection or API key.")}</p>
+      <button class="btn" id="useDemo">Show demo data instead</button></div>`;
+    $("useDemo").onclick = () => { state.useDemo = true; load(); };
+  }
+}
+
+/* ============ 7. EVENTS ============ */
+function drawChips(){
+  $("cats").innerHTML = CATEGORIES.map(c => `<button class="chip" type="button" data-c="${c}" aria-pressed="${c === state.category}">${c}</button>`).join("");
+}
+$("cats").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  state.category = b.dataset.c; state.query = ""; $("q").value = "";
+  drawChips(); load();
+  $("news").scrollIntoView({behavior:"smooth"});
+});
+$("form").addEventListener("submit", e => {   // runs on Search click and on Enter
+  e.preventDefault();
+  state.query = $("q").value.trim(); state.category = "All";
+  drawChips(); load();
+  $("news").scrollIntoView({behavior:"smooth"});
+});
+$("menuBtn").onclick = () => {
+  const open = $("nav").classList.toggle("open");
+  $("menuBtn").setAttribute("aria-expanded", open);
+};
+$("nav").addEventListener("click", e => {
+  if (e.target.tagName === "A"){
+    $("nav").classList.remove("open"); $("menuBtn").setAttribute("aria-expanded", false);
+    document.querySelectorAll("nav a").forEach(a => a.classList.toggle("on", a === e.target));
+    if (e.target.id === "navSearch") setTimeout(() => $("q").focus(), 300);
+  }
+});
+
+drawChips();
+load();
+</script>
+</body>
+</html>
